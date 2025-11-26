@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nadelson Team</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: hidden;
+            scroll-behavior: smooth;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .main-container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            height: 80vh;
+            gap: 60px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-container {
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.25);
+            margin: 0 auto;
+            transition: all 0.4s ease;
+            border: 4px solid white;
+            background: white;
+        }
+
+        .logo:hover {
+            transform: scale(1.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .logo-title {
+            margin-top: 15px;
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .controls-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            padding-left: 40px;
+        }
+
+        .carousel-container {
+            width: 100%;
+            max-width: 500px;
+            height: 70vh;
+            position: relative;
+            perspective: 1000px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .carousel-container .nav-arrow {
+            display: none;
+        }
+
+        .carousel-track {
+            width: 450px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .card {
+            position: absolute;
+            width: 400px;
+            height: 225px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            border: 3px solid white;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .card.center {
+            z-index: 10;
+            transform: scale(1.1) translateZ(0);
+        }
+
+        .card.center img {
+            filter: none;
+        }
+
+        .card.up-2 {
+            z-index: 1;
+            transform: translateY(-300px) scale(0.8) translateZ(-300px);
+            opacity: 0.7;
+        }
+
+        .card.up-2 img {
+            filter: grayscale(100%);
+        }
+
+        .card.up-1 {
+            z-index: 5;
+            transform: translateY(-150px) scale(0.9) translateZ(-100px);
+            opacity: 0.9;
+        }
+
+        .card.up-1 img {
+            filter: grayscale(100%);
+        }
+
+        .card.down-1 {
+            z-index: 5;
+            transform: translateY(150px) scale(0.9) translateZ(-100px);
+            opacity: 0.9;
+        }
+
+        .card.down-1 img {
+            filter: grayscale(100%);
+        }
+
+        .card.down-2 {
+            z-index: 1;
+            transform: translateY(300px) scale(0.8) translateZ(-300px);
+            opacity: 0.7;
+        }
+
+        .card.down-2 img {
+            filter: grayscale(100%);
+        }
+
+        .card.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .member-info {
+            text-align: center;
+            margin-top: 20px;
+            transition: all 0.5s ease-out;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .member-name {
+            color: #4a5568;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .member-name::before,
+        .member-name::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .member-name::before {
+            left: -90px;
+        }
+
+        .member-name::after {
+            right: -90px;
+        }
+
+        .member-role {
+            color: #718096;
+            font-size: 1.3rem;
+            font-weight: 500;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 5px 0;
+            margin-top: 5px;
+            position: relative;
+        }
+        
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .dot.active {
+            background: white;
+            transform: scale(1.3);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        }
+
+        .nav-arrow {
+            position: relative;
+            background: rgba(255, 255, 255, 0.9);
+            color: white;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 20;
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+            border: none;
+            outline: none;
+            margin: 0;
+            padding: 0;
+            overflow: visible;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-arrow:hover {
+            background: white;
+            transform: scale(1.2);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        .nav-arrow img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            filter: brightness(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .nav-arrow:hover img {
+            filter: brightness(1);
+            transform: scale(1.1);
+        }
+
+        .nav-arrow.up {
+            transform: none;
+        }
+
+        .nav-arrow.down {
+            transform: none;
+        }
+
+        .nav-controls {
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #4a5568;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-align: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: scrollFadeOut 5s ease-in-out forwards;
+            font-weight: 600;
+            line-height: 1;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .scroll-indicator span {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            display: block;
+            margin-top: 2px;
+        }
+
+        @keyframes scrollFadeOut {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+                visibility: hidden;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 0;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            }
+
+            .main-container {
+                flex-direction: column;
+                height: auto;
+                gap: 20px;
+                max-width: 100%;
+            }
+
+            .carousel-section {
+                flex: none;
+                width: 100%;
+            }
+
+            .logo {
+                width: 120px;
+                height: 120px;
+                margin-bottom: 15px;
+            }
+
+            .logo-title {
+                font-size: 1.5rem;
+            }
+
+            .controls-section {
+                flex: none;
+                width: 100%;
+                padding-left: 0;
+                gap: 20px;
+            }
+
+            .carousel-container {
+                height: 60vh;
+                max-width: 350px;
+            }
+
+            .carousel-container .nav-arrow {
+                display: flex;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 70px;
+                height: 70px;
+                margin: 0;
+                background: rgba(255, 255, 255, 0.9);
+                border: none;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            }
+
+            .carousel-container .nav-arrow:hover {
+                transform: translateX(-50%) scale(1.2);
+                background: white;
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+            }
+
+            .carousel-container .nav-arrow.up:hover {
+                transform: translateX(-50%) scale(1.2);
+            }
+
+            .carousel-container .nav-arrow.down:hover {
+                transform: translateX(-50%) scale(1.2);
+            }
+
+            .carousel-container .nav-arrow.up {
+                top: 20px;
+                transform: translateX(-50%);
+            }
+
+            .carousel-container .nav-arrow.down {
+                bottom: 20px;
+                transform: translateX(-50%);
+            }
+
+            .carousel-container .nav-arrow.up img {
+                transform: rotate(-90deg);
+                width: 45px;
+                height: 45px;
+            }
+
+            .carousel-container .nav-arrow.down img {
+                transform: rotate(90deg);
+                width: 45px;
+                height: 45px;
+            }
+
+            .nav-controls {
+                display: none;
+            }
+
+            .card {
+                width: 320px;
+                height: 180px;
+            }
+
+            .carousel-track {
+                width: 350px;
+            }
+
+            .card.up-2 {
+                transform: translateY(-160px) scale(0.8) translateZ(-300px);
+            }
+
+            .card.up-1 {
+                transform: translateY(-80px) scale(0.9) translateZ(-100px);
+            }
+
+            .card.down-1 {
+                transform: translateY(80px) scale(0.9) translateZ(-100px);
+            }
+
+            .card.down-2 {
+                transform: translateY(160px) scale(0.8) translateZ(-300px);
+            }
+
+            .member-name {
+                font-size: 1.6rem;
+            }
+
+            .member-role {
+                font-size: 1.1rem;
+            }
+
+            .member-name::before,
+            .member-name::after {
+                width: 40px;
+            }
+
+            .member-name::before {
+                left: -50px;
+            }
+
+            .member-name::after {
+                right: -50px;
+            }
+
+            .member-info {
+                padding: 20px 30px;
+            }
+
+            .scroll-indicator {
+                bottom: 20px;
+                right: 20px;
+                padding: 8px 15px;
+                font-size: 0.7rem;
+            }
+
+            .scroll-indicator span {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="carousel-section">
+            <div class="logo-container">
+                <div class="logo">
+                    <img src="https://i.ibb.co/wN7FXGQk/Whisk-45b678a2d2be123922348e62717f3029dr.jpg" alt="Logo Nadelson">
+                </div>
+                <div class="logo-title">NADELSON TEAM</div>
+            </div>
+            <div class="carousel-container">
+                <button class="nav-arrow up">
+                    <img src="https://ik.imagekit.io/gopichakradhar/icons/top.png?updatedAt=1754290522765" alt="Up">
+                </button>
+                <div class="carousel-track">
+                    <div class="card" data-index="0">
+                        <img src="https://i.ibb.co/FbrF8D9R/06957dd6-349f-4852-82ba-e7b919d0d442.jpg" alt="Compañerismo 1">
+                    </div>
+                    <div class="card" data-index="1">
+                        <img src="https://i.ibb.co/JRddJqCj/c7416342-c464-45a1-be14-e59be142705d.jpg" alt="Compañerismo 2">
+                    </div>
+                    <div class="card" data-index="2">
+                        <img src="https://i.ibb.co/9kLtYYGd/Whisk-55e8252a541ba20ad08494bea5da563aeg-1.png" alt="Compañerismo 3">
+                    </div>
+                    <div class="card" data-index="3">
+                        <img src="https://i.ibb.co/N2g8G0Qn/Whisk-22ab6211c59ef7fb3374bf94430dd32ceg.png" alt="Compañerismo 4">
+                    </div>
+                    <div class="card" data-index="4">
+                        <img src="https://i.ibb.co/Gf2KZZ7w/Whisk-625269c9c9e1fb28d2942d87ba2a8140eg.png" alt="Compañerismo 5">
+                    </div>
+                    <div class="card" data-index="5">
+                        <img src="https://i.ibb.co/ymMSyNpV/72c40343-5ff1-4415-b972-dec6ba9dbb44.jpg" alt="Compañerismo 6">
+                    </div>
+                </div>
+                <button class="nav-arrow down">
+                    <img src="https://ik.imagekit.io/gopichakradhar/icons/down.png?updatedAt=1754290523249" alt="Down">
+                </button>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <div class="nav-controls">
+                <button class="nav-arrow up">
+                    <img src="https://ik.imagekit.io/gopichakradhar/icons/top.png?updatedAt=1754290522765" alt="Up">
+                </button>
+                <button class="nav-arrow down">
+                    <img src="https://ik.imagekit.io/gopichakradhar/icons/down.png?updatedAt=1754290523249" alt="Down">
+                </button>
+            </div>
+
+            <div class="member-info">
+                <h2 class="member-name">No fue el plan… pero salió perfectoo</h2>
+                <p class="member-role">😎🥰</p>
+            </div>
+
+            <div class="dots">
+                <div class="dot active" data-index="0"></div>
+                <div class="dot" data-index="1"></div>
+                <div class="dot" data-index="2"></div>
+                <div class="dot" data-index="3"></div>
+                <div class="dot" data-index="4"></div>
+                <div class="dot" data-index="5"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const teamMembers = [
+            { name: "No fue el plan… pero salió perfectoo", role: "😎🥰" },
+            { name: "islanda,oslanda,aleybi,estewa,anelson,NADELSON,stanleyCR7,JHON AFTER,BENDY EL GUAPO😂", role: "Apoyo Mutuo" },
+            { name: "fue lo mejor ", role: "TREMENDO" },
+            { name: "Capturando lo que no se repite.", role: "😎😋" },
+            { name: "Donde hay buena vibra, siempre fluye todo.", role: "🧠🤩" },
+            { name: "Gente real, momentos reales.", role: "los quiero" }
+        ];
+
+        const cards = document.querySelectorAll(".card");
+        const dots = document.querySelectorAll(".dot");
+        const memberName = document.querySelector(".member-name");
+        const memberRole = document.querySelector(".member-role");
+        const upArrows = document.querySelectorAll(".nav-arrow.up");
+        const downArrows = document.querySelectorAll(".nav-arrow.down");
+        let currentIndex = 0;
+        let isAnimating = false;
+
+        function updateCarousel(newIndex) {
+            if (isAnimating) return;
+            isAnimating = true;
+
+            currentIndex = (newIndex + cards.length) % cards.length;
+
+            cards.forEach((card, i) => {
+                const offset = (i - currentIndex + cards.length) % cards.length;
+
+                card.classList.remove(
+                    "center",
+                    "up-1",
+                    "up-2",
+                    "down-1",
+                    "down-2",
+                    "hidden"
+                );
+
+                if (offset === 0) {
+                    card.classList.add("center");
+                } else if (offset === 1) {
+                    card.classList.add("down-1");
+                } else if (offset === 2) {
+                    card.classList.add("down-2");
+                } else if (offset === cards.length - 1) {
+                    card.classList.add("up-1");
+                } else if (offset === cards.length - 2) {
+                    card.classList.add("up-2");
+                } else {
+                    card.classList.add("hidden");
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle("active", i === currentIndex);
+            });
+
+            memberName.style.opacity = "0";
+            memberRole.style.opacity = "0";
+
+            setTimeout(() => {
+                memberName.textContent = teamMembers[currentIndex].name;
+                memberRole.textContent = teamMembers[currentIndex].role;
+                memberName.style.opacity = "1";
+                memberRole.style.opacity = "1";
+            }, 300);
+
+            setTimeout(() => {
+                isAnimating = false;
+            }, 800);
+        }
+
+        upArrows.forEach(arrow => {
+            arrow.addEventListener("click", () => {
+                updateCarousel(currentIndex - 1);
+            });
+        });
+
+        downArrows.forEach(arrow => {
+            arrow.addEventListener("click", () => {
+                updateCarousel(currentIndex + 1);
+            });
+        });
+
+        dots.forEach((dot, i) => {
+            dot.addEventListener("click", () => {
+                updateCarousel(i);
+            });
+        });
+
+        cards.forEach((card, i) => {
+            card.addEventListener("click", () => {
+                updateCarousel(i);
+            });
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "ArrowUp") {
+                updateCarousel(currentIndex - 1);
+            } else if (e.key === "ArrowDown") {
+                updateCarousel(currentIndex + 1);
+            }
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // Add scroll indicator
+        function createScrollIndicator() {
+            const indicator = document.createElement('div');
+            indicator.className = 'scroll-indicator';
+            indicator.innerHTML = 'scroll';
+            document.body.appendChild(indicator);
+        }
+
+        // Initialize scroll indicator
+        createScrollIndicator();
+
+        document.addEventListener("touchstart", (e) => {
+            touchStartX = e.changedTouches[0].screenY;
+        });
+
+        document.addEventListener("touchend", (e) => {
+            touchEndX = e.changedTouches[0].screenY;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    updateCarousel(currentIndex + 1);
+                } else {
+                    updateCarousel(currentIndex - 1);
+                }
+            }
+        }
+
+        updateCarousel(0);
+    </script>
+</body>
+</html>
